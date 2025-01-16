@@ -1,10 +1,17 @@
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, useColorScheme } from "@mui/material";
-import React from "react";
 import {
   DarkMode as DarkModeIcon,
   LightMode as LightModeIcon,
   SettingsBrightness as SettingsBrightnessIcon,
 } from "@mui/icons-material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  useColorScheme,
+} from "@mui/material";
 
 const ModeSelect = () => {
   const { mode, setMode } = useColorScheme();
@@ -17,7 +24,7 @@ const ModeSelect = () => {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+    <FormControl size="small" sx={{ minWidth: "120px" }}>
       <InputLabel id="demo-select-small-label">Mode</InputLabel>
       <Select
         labelId="demo-select-small-label"
@@ -27,16 +34,16 @@ const ModeSelect = () => {
         onChange={handleChange}
       >
         <MenuItem value={"dark"}>
-          <div
-            style={{
+          <Box
+            sx={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
+              gap: 1,
             }}
           >
             <DarkModeIcon fontSize="small" />
             Dark
-          </div>
+          </Box>
         </MenuItem>
         <MenuItem value={"light"}>
           <Box
