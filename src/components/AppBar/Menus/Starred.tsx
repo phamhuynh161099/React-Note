@@ -23,6 +23,7 @@ function Starred() {
     <>
       <Box>
         <Button
+          sx={{ color: "white" }}
           id="basic-button-starred"
           aria-controls={open ? "basic-menu-workspace" : undefined}
           aria-haspopup="true"

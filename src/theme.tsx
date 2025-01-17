@@ -65,7 +65,7 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => {
           return {
-            color: theme.palette.primary.main,
+            // color: theme.palette.primary.main,
             fontSize: "0.875rem",
           };
         },
@@ -75,17 +75,23 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => {
           return {
-            color: theme.palette.primary.main,
-            fontSize: "0.875rem",
-            ".MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.light,
-            },
-            "&:hover": {
-              ".MuiOutlinedInput-notchedOutline": {
-                borderColor: theme.palette.primary.main,
-              },
-            },
+            // color: theme.palette.primary.main,
+            // fontSize: "0.875rem",
+            // ".MuiOutlinedInput-notchedOutline": {
+            //   borderColor: theme.palette.primary.light,
+            // },
+            // "&:hover": {
+            //   ".MuiOutlinedInput-notchedOutline": {
+            //     borderColor: theme.palette.primary.main,
+            //   },
+            // },
             "& fieldset": {
+              borderWidth: "0.5px !important",
+            },
+            "&:hover fieldset": {
+              borderWidth: "1px !important",
+            },
+            "&.Mui-focused fieldset": {
               borderWidth: "1px !important",
             },
           };
@@ -99,16 +105,16 @@ const theme = createTheme({
   },
   colorSchemes: {
     light: {
-      palette: {
-        primary: teal,
-        secondary: deepOrange,
-      },
+      // palette: {
+      //   primary: teal,
+      //   secondary: deepOrange,
+      // },
     },
     dark: {
-      palette: {
-        primary: cyan,
-        secondary: orange,
-      },
+      // palette: {
+      //   primary: cyan,
+      //   secondary: orange,
+      // },
     },
   },
 });

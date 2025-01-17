@@ -10,7 +10,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React, { useState } from "react";
 
 function Workspaces() {
@@ -27,12 +27,13 @@ function Workspaces() {
     <>
       <Box>
         <Button
+          sx={{ color: "white" }}
           id="basic-button-workspaces"
           aria-controls={open ? "basic-menu-workspace" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
-          endIcon={<ExpandMoreIcon/>}
+          endIcon={<ExpandMoreIcon />}
         >
           Workspaces
         </Button>
