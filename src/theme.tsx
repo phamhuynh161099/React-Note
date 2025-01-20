@@ -6,6 +6,7 @@ declare module "@mui/material/styles" {
     reactNoteCustom: {
       appBarHeight: string;
       boradBarHeight: string;
+      boardContentHeight: string;
     };
   }
 
@@ -13,9 +14,14 @@ declare module "@mui/material/styles" {
     reactNoteCustom?: {
       appBarHeight?: string;
       boradBarHeight?: string;
+      boardContentHeight?: string;
     };
   }
 }
+
+const APP_BAR_HEIGHT = "58px";
+const BOARD_BAR_HEIGHT = "60px";
+const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`;
 
 // A custom theme for this app
 const theme = createTheme({
@@ -39,6 +45,13 @@ const theme = createTheme({
       },
     },
     MuiTypography: {
+      styleOverrides: {
+        root: {
+          "&.MuiTypography-body1": {
+            fontSize: "0.875rem",
+          },
+        },
+      },
       defaultProps: {
         variantMapping: {
           h1: "h2",
@@ -104,8 +117,9 @@ const theme = createTheme({
     },
   },
   reactNoteCustom: {
-    appBarHeight: "58px",
-    boradBarHeight: "60px",
+    appBarHeight: APP_BAR_HEIGHT,
+    boradBarHeight: BOARD_BAR_HEIGHT,
+    boardContentHeight: BOARD_CONTENT_HEIGHT,
   },
   colorSchemes: {
     light: {
