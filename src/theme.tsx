@@ -28,11 +28,11 @@ const theme = createTheme({
             height: "8px",
           },
           "*::-webkit-scrollbar-thumb": {
-            backgroundColor: "#bdc3c7",
+            backgroundColor: "#dcddd1",
             borderRadius: "8px",
           },
           "*::-webkit-scrollbar-thumb:hover": {
-            backgroundColor: "#00b894",
+            backgroundColor: "white",
             borderRadius: "8px",
           },
         },
@@ -58,6 +58,10 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "none",
+          borderWidth: "0.5px",
+          "&:hover": {
+            borderWidth: "0.5px",
+          },
         },
       },
     },

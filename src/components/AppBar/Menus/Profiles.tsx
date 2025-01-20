@@ -28,7 +28,7 @@ function Profiles() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 30, height: 30 }}>M</Avatar>
+            <Avatar sx={{ width: 36, height: 36 }}>M</Avatar>
           </IconButton>
         </Tooltip>
 

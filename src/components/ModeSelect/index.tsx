@@ -50,6 +50,12 @@ const ModeSelect = () => {
           "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: "white",
           },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "white",
+          },
+          ".MuiSvgIcon-root": {
+            color: "white",
+          },
         }}
       >
         <MenuItem value={"dark"}>
