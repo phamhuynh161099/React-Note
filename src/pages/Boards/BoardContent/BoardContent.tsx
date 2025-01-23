@@ -1,7 +1,11 @@
 import { Box } from "@mui/material";
 import ListColumns from "./ListColumns/ListColumns";
 
-function BoardContent() {
+interface BoardContentProps {
+  board: any;
+}
+
+function BoardContent({ board }: BoardContentProps) {
   return (
     <>
       <Box
@@ -13,7 +17,7 @@ function BoardContent() {
           p: "10px 0",
         }}
       >
-        <ListColumns />
+        <ListColumns columns={board?.columns}/>
       </Box>
     </>
   );

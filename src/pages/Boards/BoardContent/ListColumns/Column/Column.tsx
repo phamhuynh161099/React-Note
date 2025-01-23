@@ -1,11 +1,7 @@
-import React, { useState } from "react";
 import {
   AddCard,
-  Attachment,
-  Comment,
   DeleteForever,
-  DragHandle,
-  Group,
+  DragHandle
 } from "@mui/icons-material";
 import Cloud from "@mui/icons-material/Cloud";
 import ContentCopy from "@mui/icons-material/ContentCopy";
@@ -14,18 +10,19 @@ import ContentPaste from "@mui/icons-material/ContentPaste";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box, Tooltip, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Divider from "@mui/material/Divider";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import React, { useState } from "react";
 import ListCards from "./ListCards/ListCards";
 
-const Column = () => {
+interface ColumnProps {
+  column: any;
+}
+
+const Column = ({ column }: ColumnProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick: any = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -68,7 +65,7 @@ const Column = () => {
               cursor: "pointer",
             }}
           >
-            Column Title
+            {column?.title}
           </Typography>
           <Box>
             <Tooltip title="More options">
@@ -135,7 +132,7 @@ const Column = () => {
         </Box>
 
         {/* List Cards */}
-        <ListCards />
+        <ListCards cards={column?.cards}/>
 
         {/* Box Column Footer */}
         <Box

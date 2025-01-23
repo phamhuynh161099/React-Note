@@ -1,12 +1,11 @@
-import { Attachment, Comment, Group } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
+import { Box } from "@mui/material";
 import Card from "./Card/Card";
 
-const ListCards = () => {
+interface ListCardsProps {
+  cards: any;
+}
+
+const ListCards = ({ cards }: ListCardsProps) => {
   return (
     <>
       <Box
@@ -32,8 +31,13 @@ const ListCards = () => {
           },
         }}
       >
-        <Card />
-        <Card temporaryHideMedia />
+        {cards?.map((card: any) => {
+          return (
+            <>
+              <Card key={card?._id} card={card}/>
+            </>
+          );
+        })}
       </Box>
     </>
   );
