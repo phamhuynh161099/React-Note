@@ -17,6 +17,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import React, { useState } from "react";
 import ListCards from "./ListCards/ListCards";
+import { mapOrder } from "@/utils/sort";
 
 interface ColumnProps {
   column: any;
@@ -31,6 +32,9 @@ const Column = ({ column }: ColumnProps) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const orderedCards = mapOrder(column?.cards,column?.cardOrderIds,'_id')
+
   return (
     <>
       <Box
@@ -132,7 +136,7 @@ const Column = ({ column }: ColumnProps) => {
         </Box>
 
         {/* List Cards */}
-        <ListCards cards={column?.cards}/>
+        <ListCards cards={orderedCards}/>
 
         {/* Box Column Footer */}
         <Box

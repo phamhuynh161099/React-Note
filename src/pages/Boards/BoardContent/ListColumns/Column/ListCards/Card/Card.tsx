@@ -1,8 +1,6 @@
-import React from "react";
 import { Attachment, Comment, Group } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Card as MuiCard, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Card as MuiCard } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
