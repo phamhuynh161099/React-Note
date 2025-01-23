@@ -1,8 +1,4 @@
-import {
-  AddCard,
-  DeleteForever,
-  DragHandle
-} from "@mui/icons-material";
+import { AddCard, DeleteForever, DragHandle } from "@mui/icons-material";
 import Cloud from "@mui/icons-material/Cloud";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import ContentCut from "@mui/icons-material/ContentCut";
@@ -19,11 +15,22 @@ import React, { useState } from "react";
 import ListCards from "./ListCards/ListCards";
 import { mapOrder } from "@/utils/sort";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 interface ColumnProps {
   column: any;
 }
 
 const Column = ({ column }: ColumnProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: column._id, data: { ...column } });
+
+  const dndKitColumnStyles = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  };
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick: any = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,11 +40,15 @@ const Column = ({ column }: ColumnProps) => {
     setAnchorEl(null);
   };
 
-  const orderedCards = mapOrder(column?.cards,column?.cardOrderIds,'_id')
+  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id");
 
   return (
     <>
       <Box
+        ref={setNodeRef}
+        style={dndKitColumnStyles}
+        {...attributes}
+        {...listeners}
         sx={{
           minWidth: "300px",
           maxWidth: "300px",
@@ -136,7 +147,7 @@ const Column = ({ column }: ColumnProps) => {
         </Box>
 
         {/* List Cards */}
-        <ListCards cards={orderedCards}/>
+        <ListCards cards={orderedCards} />
 
         {/* Box Column Footer */}
         <Box
