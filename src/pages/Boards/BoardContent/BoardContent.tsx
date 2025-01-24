@@ -14,6 +14,7 @@ import {
   defaultDropAnimationSideEffects,
   DropAnimation,
   DragOverEvent,
+  closestCorners,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
@@ -50,6 +51,8 @@ function BoardContent({ board }: BoardContentProps) {
   const [activeDragItemId, setActiveDragItemId] = useState<any>(null);
   const [activeDragItemType, setActiveDragItemType] = useState<any>(null);
   const [activeDragItemData, setActiveDragItemData] = useState<any>(null);
+  const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] =
+    useState<any>(null);
 
   useEffect(() => {
     setOrderedColums(
@@ -72,6 +75,10 @@ function BoardContent({ board }: BoardContentProps) {
         : ACTIVE_DRAG_ITEM_TYPE.COLUMN
     );
     setActiveDragItemData(event?.active?.data?.current);
+
+    if (event?.active?.data?.current?.columnId) {
+      setOldColumnWhenDraggingCard(findColumnByCardId(event?.active?.id));
+    }
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -155,29 +162,75 @@ function BoardContent({ board }: BoardContentProps) {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log("handleDragEnd", event);
-    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
-      console.log("Drag Card");
-      return;
-    } else {
-    }
-
     const { active, over } = event;
-
     if (!active || !over) return;
 
-    if (active.id !== over?.id) {
-      const oldIndex = orderedColums.findIndex((c: any) => c._id === active.id);
-      const newIndex = orderedColums.findIndex((c: any) => c._id === over?.id);
-      const dndOrderedColumns = arrayMove(orderedColums, oldIndex, newIndex);
-      const dndOrderedColumnsIds = dndOrderedColumns.map((c: any) => c._id);
+    console.log("handleDragEnd", event);
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
+      const {
+        id: activeDragginCardId,
+        data: { current: activeDraggingCardData },
+      } = active;
+      const { id: overCardId } = over;
 
-      setOrderedColums(dndOrderedColumns);
+      const activeColumn: any = findColumnByCardId(activeDragginCardId);
+      const overColumn: any = findColumnByCardId(overCardId);
+
+      if (!activeColumn || !overColumn) return;
+
+      if (oldColumnWhenDraggingCard._id !== overColumn._id) {
+      } else {
+        const oldCardIndex = oldColumnWhenDraggingCard?.cards?.findIndex(
+          (c: any) => c._id === activeDragItemId
+        );
+        const newCardIndex = overColumn?.cards?.findIndex(
+          (c: any) => c._id === overCardId
+        );
+
+        const dndOrderedCards = arrayMove(
+          oldColumnWhenDraggingCard?.cards,
+          oldCardIndex,
+          newCardIndex
+        );
+
+        setOrderedColums((prevColumns: any) => {
+          const nextColumns = cloneDeep(prevColumns);
+
+          const targetColumn: any = nextColumns.find(
+            (c: any) => c._id === overColumn._id
+          );
+
+          targetColumn.cards = dndOrderedCards;
+          targetColumn.cardOrderIds = dndOrderedCards.map((column: any) => column._id);
+          return nextColumns;
+        });
+      }
     }
 
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      if (active.id !== over?.id) {
+        const oldColumnIndex = orderedColums.findIndex(
+          (c: any) => c._id === active.id
+        );
+        const newColumnIndex = orderedColums.findIndex(
+          (c: any) => c._id === over?.id
+        );
+        const dndOrderedColumns = arrayMove(
+          orderedColums,
+          oldColumnIndex,
+          newColumnIndex
+        );
+        const dndOrderedColumnsIds = dndOrderedColumns.map((c: any) => c._id);
+
+        setOrderedColums(dndOrderedColumns);
+      }
+    }
+
+    // Clear state khi keo tha xong
     setActiveDragItemId(null);
     setActiveDragItemType(null);
     setActiveDragItemData(null);
+    setOldColumnWhenDraggingCard(null);
   };
 
   const dropAnimation: DropAnimation = {
@@ -197,6 +250,7 @@ function BoardContent({ board }: BoardContentProps) {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
         sensors={sensors}
+        collisionDetection={closestCorners}
       >
         <Box
           sx={{
