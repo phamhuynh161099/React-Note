@@ -13,11 +13,13 @@ import {
   DragOverlay,
   defaultDropAnimationSideEffects,
   DropAnimation,
+  DragOverEvent,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
 import Column from "./ListColumns/Column/Column";
 import Card from "./ListColumns/Column/ListCards/Card/Card";
+import { cloneDeep } from "lodash";
 
 interface BoardContentProps {
   board: any;
@@ -55,6 +57,12 @@ function BoardContent({ board }: BoardContentProps) {
     );
   }, [board]);
 
+  const findColumnByCardId = (cardId: any) => {
+    return orderedColums.find((column: any) =>
+      column?.cards?.map((card: any) => card._id)?.includes(cardId)
+    );
+  };
+
   const handleDragStart = (event: DragStartEvent) => {
     console.log("handleDragStart", event);
     setActiveDragItemId(event?.active?.id);
@@ -66,11 +74,97 @@ function BoardContent({ board }: BoardContentProps) {
     setActiveDragItemData(event?.active?.data?.current);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    console.log("handleDragEnd", event);
+  const handleDragOver = (event: DragOverEvent) => {
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      return;
+    }
+
+    console.log("handleDragOver", event);
     const { active, over } = event;
 
-    if (!over) return;
+    if (!active || !over) return;
+
+    const {
+      id: activeDragginCardId,
+      data: { current: activeDraggingCardData },
+    } = active;
+    const { id: overCardId } = over;
+
+    const activeColumn: any = findColumnByCardId(activeDragginCardId);
+    const overColumn: any = findColumnByCardId(overCardId);
+
+    if (!activeColumn || !overColumn) return;
+
+    if (activeColumn._id !== overColumn._id) {
+      setOrderedColums((prevColumns) => {
+        const overCardIndex = overColumn?.cards?.findIndex(
+          (card: any) => card._id === overCardId
+        );
+
+        let newCardIndex;
+        const isBelowOverItem =
+          active.rect.current.translated &&
+          active.rect.current.translated.top > over.rect.top + over.rect.height;
+        const modifier = isBelowOverItem ? 1 : 0;
+        newCardIndex =
+          overCardIndex >= 0
+            ? overCardIndex + modifier
+            : overColumn?.cards?.length + 1;
+
+        const nextColumns = cloneDeep(prevColumns);
+        const nextActiveColumn: any = nextColumns.find(
+          (column: any) => column._id === activeColumn._id
+        );
+        const nextOverColumn: any = nextColumns.find(
+          (column: any) => column._id === overColumn._id
+        );
+
+        if (nextActiveColumn) {
+          //
+          nextActiveColumn.cards = nextActiveColumn.cards.filter(
+            (card: any) => card._id !== activeDragginCardId
+          );
+
+          // Cập nhật lại mảng OrderIds, do vừa thay đổi phần tử ở đây
+          nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(
+            (card: any) => card._id
+          );
+        }
+
+        if (nextOverColumn) {
+          //
+          nextOverColumn.cards = nextOverColumn.cards.filter(
+            (card: any) => card._id !== activeDragginCardId
+          );
+
+          nextOverColumn.cards = nextOverColumn.cards.toSpliced(
+            newCardIndex,
+            0,
+            activeDraggingCardData
+          );
+
+          // Cập nhật lại mảng OrderIds, do vừa thay đổi phần tử ở đây
+          nextOverColumn.cardOrderIds = nextOverColumn.cards.map(
+            (card: any) => card._id
+          );
+        }
+
+        return nextColumns;
+      });
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    console.log("handleDragEnd", event);
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
+      console.log("Drag Card");
+      return;
+    } else {
+    }
+
+    const { active, over } = event;
+
+    if (!active || !over) return;
 
     if (active.id !== over?.id) {
       const oldIndex = orderedColums.findIndex((c: any) => c._id === active.id);
@@ -100,6 +194,7 @@ function BoardContent({ board }: BoardContentProps) {
     <>
       <DndContext
         onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
         sensors={sensors}
       >
