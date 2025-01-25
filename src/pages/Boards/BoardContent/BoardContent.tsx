@@ -1,30 +1,29 @@
-import { Box } from "@mui/material";
-import ListColumns from "./ListColumns/ListColumns";
 import { mapOrder } from "@/utils/sort";
 import {
   DndContext,
   DragEndEvent,
-  PointerSensor,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  DropAnimation,
   MouseSensor,
+  PointerSensor,
   TouchSensor,
+  closestCorners,
+  defaultDropAnimationSideEffects,
+  getFirstCollision,
+  pointerWithin,
   useSensor,
   useSensors,
-  DragStartEvent,
-  DragOverlay,
-  defaultDropAnimationSideEffects,
-  DropAnimation,
-  DragOverEvent,
-  closestCorners,
-  pointerWithin,
-  rectIntersection,
-  getFirstCollision,
-  closestCenter,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import { Box } from "@mui/material";
+import { cloneDeep, isEmpty } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Column from "./ListColumns/Column/Column";
 import Card from "./ListColumns/Column/ListCards/Card/Card";
-import { cloneDeep, over } from "lodash";
+import ListColumns from "./ListColumns/ListColumns";
+import { generatePlaceholderCard } from "@/utils/formatters";
 
 interface BoardContentProps {
   board: any;
@@ -110,6 +109,11 @@ function BoardContent({ board }: BoardContentProps) {
           (card: any) => card._id !== activeDragginCardId
         );
 
+        //* Thêm 1 card ảo, nếu đã di chuyển hết card
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)];
+        }
+
         // Cập nhật lại mảng OrderIds, do vừa thay đổi phần tử ở đây
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(
           (card: any) => card._id
@@ -131,6 +135,11 @@ function BoardContent({ board }: BoardContentProps) {
           newCardIndex,
           0,
           rebuild_activeDraggingCardData
+        );
+
+        //* Xóa card ảo
+        nextOverColumn.cards = nextOverColumn.cards.filter(
+          (card: any) => !card.FE_PlaceholderCard
         );
 
         // Cập nhật lại mảng OrderIds, do vừa thay đổi phần tử ở đây
@@ -287,7 +296,7 @@ function BoardContent({ board }: BoardContentProps) {
     }),
   };
 
-  const collisionDetectionStrategy:any = useCallback(
+  const collisionDetectionStrategy: any = useCallback(
     (args: any) => {
       if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
         return closestCorners({ ...args });
